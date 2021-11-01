@@ -3,14 +3,13 @@
 
 CNote::CNote()
 {
+
     for (int i = 0; i < 4; i++)
     {
-        m_effects[i] = false;
-    }
-}
 
-CNote::~CNote(void)
-{
+        m_effects[i] = false;
+
+    }
 
 }
 
@@ -53,6 +52,7 @@ void CNote::XmlLoad(IXMLDOMNode* xml, std::wstring& instrument)
             m_measure = value.intVal - 1;
 
         }
+
         else if (name == "beat")
         {
 
@@ -79,7 +79,6 @@ bool CNote::operator<(const CNote& b)
     return false;
 
 }
-
 
 bool CNote::HEffect(int effect)
 {

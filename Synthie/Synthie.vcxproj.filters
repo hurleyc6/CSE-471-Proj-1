@@ -87,7 +87,10 @@
     <ClCompile Include="Flange.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PianoFactory.cpp">
+    <ClCompile Include="AdditiveSynthesizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AdditiveWaves.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -173,7 +176,10 @@
     <ClInclude Include="Flange.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PianoFactory.h">
+    <ClInclude Include="AdditiveSynthesizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AdditiveWaves.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

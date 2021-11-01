@@ -126,6 +126,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AdditiveSynthesizer.cpp" />
+    <ClCompile Include="AdditiveWaves.cpp" />
     <ClCompile Include="AR.cpp" />
     <ClCompile Include="AudioNode.cpp" />
     <ClCompile Include="audio\DirSound.cpp" />
@@ -137,7 +139,6 @@
     <ClCompile Include="Limiting.cpp" />
     <ClCompile Include="NoiseGating.cpp" />
     <ClCompile Include="Note.cpp" />
-    <ClCompile Include="PianoFactory.cpp" />
     <ClCompile Include="SineWave.cpp" />
     <ClCompile Include="Synthesizer.cpp" />
     <ClCompile Include="MainFrm.cpp" />
@@ -156,6 +157,8 @@
     <ClCompile Include="ToneInstrument.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AdditiveSynthesizer.h" />
+    <ClInclude Include="AdditiveWaves.h" />
     <ClInclude Include="AR.h" />
     <ClInclude Include="AudioNode.h" />
     <ClInclude Include="audio\DirSound.h" />
@@ -167,7 +170,6 @@
     <ClInclude Include="Limiting.h" />
     <ClInclude Include="NoiseGating.h" />
     <ClInclude Include="Note.h" />
-    <ClInclude Include="PianoFactory.h" />
     <ClInclude Include="SineWave.h" />
     <ClInclude Include="Synthesizer.h" />
     <ClInclude Include="MainFrm.h" />

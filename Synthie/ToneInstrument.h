@@ -13,22 +13,26 @@ public:
 
     virtual bool Generate();
 
-    void SetFreq(double f) { m_sinewave.SetFreq(f); }
-
-    void SetAmplitude(double a) { m_sinewave.SetAmplitude(a); }
-
-    void SetDuration(double d) { m_duration = d; }
-
     virtual void SetNote(CNote* note);
+
+    void SetFreq(double f);
+
+    void SetAmplitude(double a);
+
+    void SetDuration(double d);
 
 private:
 
     CSineWave m_sinewave;
 
-    double m_duration;
+    double m_dur;
 
     double m_time;
 
-    CAR m_ar;
+    double m_stop;
+
+    double m_start;
+
+    //CAR m_ar;
 
 };

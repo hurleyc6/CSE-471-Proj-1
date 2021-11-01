@@ -2,7 +2,7 @@
 #include "AudioNode.h"
 #include "Note.h"
 
-class CSynthesizer;
+//class CSynthesizer;
 
 class CInstrument : public CAudioNode
 {
@@ -12,7 +12,7 @@ public:
 
 	virtual void SetNote(CNote* note) = 0;
 
-	void Synthes(CSynthesizer* syn);
+	//void Synthes(CSynthesizer* syn);
 
 	bool HEffect(int effect);
 
@@ -22,7 +22,7 @@ public:
 
 private:
 
-	CSynthesizer* m_synthesizer = nullptr;
+	//CSynthesizer* m_synthesizer = nullptr;
 
 	bool m_effects[4];
 

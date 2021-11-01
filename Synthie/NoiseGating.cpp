@@ -3,46 +3,95 @@
 
 CNoiseGating::CNoiseGating(void)
 {
+
 	m_wet = 0.0;
 	m_dry = 0.0;
 	m_first = 1.0;
 	m_second = 1.0;
 	m_threshold = 0;
+
 }
 
 void CNoiseGating::Play(double* in, double* out)
 {
-	if ((in[0] < m_threshold) && (in[0] > -m_threshold))
+	for (int i = 0; i < 2; i++)
 	{
-		m_first -= .005;
-		if (m_first < 0)
-			m_first = 0;
-	}
-	else
-	{
-		m_first += .005;
-		if (m_first > 1)
-			m_first = 1;
-	}
-	out[0] = m_dry * in[0] + (m_wet * in[0] * m_first);
 
-	if ((in[1] < m_threshold) && (in[1] > -m_threshold))
-	{
-		m_second -= .005;
-		if (m_second < 0)
-			m_second = 0;
+		if (i == 0)
+		{
+
+			if ((in[i] < m_threshold) && (in[i] > -m_threshold))
+			{
+
+				m_first -= .005;
+				if (m_first < 0)
+				{
+
+					m_first = 0;
+
+				}
+					
+			}
+
+			else
+			{
+
+				m_first += .005;
+				if (m_first > 1)
+				{
+
+					m_first = 1;
+
+				}
+					
+			}
+
+			double w = m_wet * in[i] * m_first;
+			double d = m_dry * in[i];
+			out[i] = d + w;
+
+		}
+
+		else if (i == 1)
+		{
+
+			if ((in[i] < m_threshold) && (in[i] > -m_threshold))
+			{
+
+				m_second -= .005;
+				if (m_second < 0)
+				{
+
+					m_second = 0;
+
+				}
+					
+			}
+
+			else
+			{
+
+				m_second += .005;
+				if (m_second > 1)
+				{
+
+					m_second = 1;
+
+				}
+					
+			}
+
+			double w = m_wet * in[i] * m_second;
+			double d = m_dry * in[i];
+			out[i] = d + w;
+
+		}
 	}
-	else
-	{
-		m_second += .005;
-		if (m_second > 1)
-			m_second = 1;
-	}
-	out[1] = m_dry * in[1] + (m_wet * in[1] * m_second);
 }
 
 void CNoiseGating::XmlLoad(IXMLDOMNode* xml)
 {
+
 	CComPtr<IXMLDOMNamedNodeMap> attributes;
 	xml->get_attributes(&attributes);
 	long len;
@@ -50,6 +99,7 @@ void CNoiseGating::XmlLoad(IXMLDOMNode* xml)
 
 	for (int i = 0; i < len; i++)
 	{
+
 		CComPtr<IXMLDOMNode> attrib;
 		attributes->get_item(i, &attrib);
 
@@ -59,25 +109,27 @@ void CNoiseGating::XmlLoad(IXMLDOMNode* xml)
 		CComVariant value;
 		attrib->get_nodeValue(&value);
 
-		if (name == "wet")
+		if (name == "threshold")
+		{
+
+			value.ChangeType(VT_I4);
+			m_threshold = value.intVal;
+
+		}
+
+		else if (name == "wet")
 		{
 
 			value.ChangeType(VT_R8);
 			m_wet = value.dblVal;
 
 		}
+
 		else if (name == "dry")
 		{
 
 			value.ChangeType(VT_R8);
 			m_dry = value.dblVal;
-
-		}
-		else if (name == "threshold")
-		{
-
-			value.ChangeType(VT_I4);
-			m_threshold = value.intVal;
 
 		}
 	}

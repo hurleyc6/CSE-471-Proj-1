@@ -2,17 +2,20 @@
 #include "Synthesizer.h"
 #include "Instrument.h"
 #include "ToneInstrument.h"
+#include "AdditiveSynthesizer.h"
+#include "AdditiveWaves.h"
 #include "xmlhelp.h"
 #include <algorithm>
+#include <cmath>
 
 using namespace std;
 
-const static int NOISEGATING = 0;
-const static int LIMITING = 1;
-const static int CHORUS = 2;
-const static int FLANGE = 3;
+const static int CHORUS = 0;
+const static int FLANGE = 1;
+const static int NOISEGATING = 2;
+const static int LIMITING = 3;
 
-CSynthesizer::CSynthesizer()
+CSynthesizer::CSynthesizer(void)
 {
 
     CoInitialize(NULL);
@@ -22,16 +25,16 @@ CSynthesizer::CSynthesizer()
 	m_time = 0;
 
     m_bpm = 120;
-    m_secperbeat = 0.5;
+    m_secperbeat = 1/(m_bpm/60);
     m_beatspermeasure = 4;
+
+    m_chorus.SFract(m_sampleRate);
+    m_flange.SFract(m_sampleRate);
 
     m_NG = false;
     m_LT = false;
     m_CS = false;
     m_FL = false;
-
-    //m_chorus.SFract(m_sampleRate);
-    //m_flange.SFract(m_sampleRate);
 
 }
 
@@ -76,18 +79,17 @@ bool CSynthesizer::Generate(double* frame)
 
         // Create the instrument object
         CInstrument* instrument = NULL;
-        /*if (note->Instrument() == L"ToneInstrument")
+        if (note->Instrument() == L"ToneInstrument")
         {
 
             instrument = new CToneInstrument();
 
-        }*/
+        }
 
-        if (note->Instrument() == L"Piano")
+        else if (note->Instrument() == L"AdditiveSynth")
         {
 
-            instrument = m_pfactory.CreateInstrument();
-            m_pfactory.SetNote(note);
+            instrument = new CAdditiveSynthesizer();
 
         }
 
@@ -97,7 +99,7 @@ bool CSynthesizer::Generate(double* frame)
 
             instrument->SetSampleRate(GetSampleRate());
             //instrument->Synthes(this);
-            instrument->SetBPM(GetBPM());
+            instrument->SetBPM(m_secperbeat);
             instrument->SetNote(note);
             instrument->Start();
 
@@ -158,22 +160,6 @@ bool CSynthesizer::Generate(double* frame)
             newFrame[0] = 0;
             newFrame[1] = 0;
 
-            double nframe[2];
-            if (instrument->HEffect(NOISEGATING))
-            {
-                m_noisegating.Play(frame, nframe);
-                newFrame[0] += nframe[0] / instrument->GetEffect();
-                newFrame[1] += nframe[1] / instrument->GetEffect();
-            }
-
-            double lframe[2];
-            if (instrument->HEffect(LIMITING))
-            {
-                m_limiting.Play(frame, lframe);
-                newFrame[0] += lframe[0] / instrument->GetEffect();
-                newFrame[1] += lframe[1] / instrument->GetEffect();
-            }
-
             double cframe[2];
             if (instrument->HEffect(CHORUS))
             {
@@ -188,6 +174,22 @@ bool CSynthesizer::Generate(double* frame)
                 m_flange.Play(frame, fframe);
                 newFrame[0] += fframe[0] / instrument->GetEffect();
                 newFrame[1] += fframe[1] / instrument->GetEffect();
+            }
+
+            double nframe[2];
+            if (instrument->HEffect(NOISEGATING))
+            {
+                m_noisegating.Play(frame, nframe);
+                newFrame[0] += nframe[0] / instrument->GetEffect();
+                newFrame[1] += nframe[1] / instrument->GetEffect();
+            }
+
+            double lframe[2];
+            if (instrument->HEffect(LIMITING))
+            {
+                m_limiting.Play(frame, lframe);
+                newFrame[0] += lframe[0] / instrument->GetEffect();
+                newFrame[1] += lframe[1] / instrument->GetEffect();
             }
 
             if (instrument->GetEffect() > 0)
@@ -369,11 +371,11 @@ void CSynthesizer::XmlLoadScore(IXMLDOMNode* xml)
         {
 
             XmlLoadInstrument(node);
-            m_NG = false;
-            m_LT = false;
             m_CS = false;
             m_FL = false;
-
+            m_NG = false;
+            m_LT = false;
+            
         }
     }
 }
@@ -413,6 +415,24 @@ void CSynthesizer::XmlLoadInstrument(IXMLDOMNode* xml)
 
         }
 
+        else if (name == "chorus")
+        {
+            value.ChangeType(VT_I4);
+            if (value.intVal == 1)
+            {
+                m_CS = true;
+            }
+        }
+
+        else if (name == "flange")
+        {
+            value.ChangeType(VT_I4);
+            if (value.intVal == 1)
+            {
+                m_FL = true;
+            }
+        }
+
         else if (name == "noisegating")
         {
             value.ChangeType(VT_I4);
@@ -428,24 +448,6 @@ void CSynthesizer::XmlLoadInstrument(IXMLDOMNode* xml)
             if (value.intVal == 1) 
             {
                 m_LT = true;
-            }
-        }
-
-        else if (name == "chorus")
-        {
-            value.ChangeType(VT_I4);
-            if (value.intVal == 1) 
-            {
-                m_CS = true;
-            }
-        }
-
-        else if (name == "flange")
-        {
-            value.ChangeType(VT_I4);
-            if (value.intVal == 1) 
-            {
-                m_FL = true;
             }
         }
     }
@@ -471,17 +473,7 @@ void CSynthesizer::XmlLoadInstrument(IXMLDOMNode* xml)
 void CSynthesizer::XmlLoadNote(IXMLDOMNode* xml, std::wstring& instrument)
 {
 
-    if (instrument == L"NoiseGate")
-    {
-        m_noisegating.XmlLoad(xml);
-    }
-
-    else if (instrument == L"Limiter")
-    {
-        m_limiting.XmlLoad(xml);
-    }
-
-    else if (instrument == L"Chorus")
+    if (instrument == L"Chorus")
     {
         m_chorus.XmlLoad(xml);
     }
@@ -491,8 +483,28 @@ void CSynthesizer::XmlLoadNote(IXMLDOMNode* xml, std::wstring& instrument)
         m_flange.XmlLoad(xml);
     }
 
+    else if (instrument == L"NoiseGate")
+    {
+        m_noisegating.XmlLoad(xml);
+    }
+
+    else if (instrument == L"Limiter")
+    {
+        m_limiting.XmlLoad(xml);
+    }
+
     m_notes.push_back(CNote());
     m_notes.back().XmlLoad(xml, instrument);
+
+    if (m_CS)
+    {
+        m_notes.back().SEffect(CHORUS);
+    }
+
+    if (m_FL)
+    {
+        m_notes.back().SEffect(FLANGE);
+    }
 
     if (m_NG) 
     {
@@ -504,13 +516,4 @@ void CSynthesizer::XmlLoadNote(IXMLDOMNode* xml, std::wstring& instrument)
         m_notes.back().SEffect(LIMITING);
     }
 
-    if (m_CS)
-    {
-        m_notes.back().SEffect(CHORUS);
-    }
-
-    if (m_FL)
-    {
-        m_notes.back().SEffect(FLANGE);
-    }
 }

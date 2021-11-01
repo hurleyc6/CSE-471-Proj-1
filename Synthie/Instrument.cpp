@@ -6,17 +6,19 @@ CInstrument::CInstrument()
 
 	for (int i = 0; i < 4; i++)
 	{
+
 		m_effects[i] = false;
+
 	}
 
 }
 
-void CInstrument::Synthes(CSynthesizer* syn)
-{
-
-	m_synthesizer = syn;
-
-}
+//void CInstrument::Synthes(CSynthesizer* syn)
+//{
+//
+//	m_synthesizer = syn;
+//
+//}
 
 bool CInstrument::HEffect(int effect)
 {
@@ -38,9 +40,17 @@ int CInstrument::GetEffect()
 	int count = 0;
 	for (int i = 0; i < 4; i++)
 	{
+
 		if (m_effects[i]) 
 		{
+
 			count++;
+
+		}
+
+		else
+		{
+			continue;
 		}
 	}
 	return count;

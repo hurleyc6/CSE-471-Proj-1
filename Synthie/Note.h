@@ -1,4 +1,5 @@
 #pragma once
+#include "xmlhelp.h"
 #include <string>
 
 class CNote
@@ -6,8 +7,6 @@ class CNote
 public:
 
     CNote(void);
-
-    virtual ~CNote(void);
 
     int Measure() const { return m_measure; }
 

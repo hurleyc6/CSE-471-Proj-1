@@ -16,11 +16,11 @@ public:
 
 private:
 
+	double m_delay;
+
 	double m_wet;
 
 	double m_dry;
-
-	double m_delay;
 
 	double m_fract;
 

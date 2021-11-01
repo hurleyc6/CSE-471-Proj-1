@@ -6,7 +6,7 @@ public:
 
     CAudioNode();
 
-    CAudioNode(double BPM);
+    //CAudioNode(double BPM);
 
     //! Start the node generation
     virtual void Start() = 0;

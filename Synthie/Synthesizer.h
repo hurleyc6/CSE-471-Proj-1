@@ -8,14 +8,13 @@
 #include "Limiting.h"
 #include "Chorus.h"
 #include "Flange.h"
-#include "PianoFactory.h"
 #include "msxml2.h"
 
 class CSynthesizer
 {
 public:
 
-    CSynthesizer();
+    CSynthesizer(void);
 
     //! Number of audio channels
     int GetNumChannels() { return m_channels; }
@@ -41,22 +40,20 @@ public:
     //! Get the time since we started generating audio
     double GetTime() { return m_time; }
 
-    void Clear();
+    void Clear(void);
 
-    void OpenScore(CString&);
+    void OpenScore(CString& filename);
+
+    //! Beats per minute 
+    //double GetBPM() { return m_bpm; }
+
+private:
 
     void XmlLoadNote(IXMLDOMNode* xml, std::wstring& instrument);
 
     void XmlLoadScore(IXMLDOMNode* xml);
 
     void XmlLoadInstrument(IXMLDOMNode* xml);
-
-    //! Beats per minute 
-    double GetBPM() { return m_bpm; }
-
-private:
-
-    CPianoFactory m_pfactory;
 
     int	m_channels;
 
