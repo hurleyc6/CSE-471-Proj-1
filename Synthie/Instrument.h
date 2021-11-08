@@ -14,9 +14,9 @@ public:
 
 	//void Synthes(CSynthesizer* syn);
 
-	bool HEffect(int effect);
+	bool HasEffect(int effect);
 
-	void SEffect(int effect);
+	void SendEffect(int effect);
 
 	int GetEffectCount();
 

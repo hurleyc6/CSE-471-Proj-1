@@ -161,7 +161,7 @@ bool CSynthesizer::Generate(double* frame)
             newFrame[1] = 0;
 
             double cframe[2];
-            if (instrument->HEffect(CHORUS))
+            if (instrument->HasEffect(CHORUS))
             {
                 m_chorus.Play(frame, cframe);
                 newFrame[0] += cframe[0] / instrument->GetEffectCount();
@@ -169,7 +169,7 @@ bool CSynthesizer::Generate(double* frame)
             }
 
             double fframe[2];
-            if (instrument->HEffect(FLANGE))
+            if (instrument->HasEffect(FLANGE))
             {
                 m_flange.Play(frame, fframe);
                 newFrame[0] += fframe[0] / instrument->GetEffectCount();
@@ -177,7 +177,7 @@ bool CSynthesizer::Generate(double* frame)
             }
 
             double nframe[2];
-            if (instrument->HEffect(NOISEGATING))
+            if (instrument->HasEffect(NOISEGATING))
             {
                 m_noisegating.Play(frame, nframe);
                 newFrame[0] += nframe[0] / instrument->GetEffectCount();
@@ -185,7 +185,7 @@ bool CSynthesizer::Generate(double* frame)
             }
 
             double lframe[2];
-            if (instrument->HEffect(LIMITING))
+            if (instrument->HasEffect(LIMITING))
             {
                 m_limiting.Play(frame, lframe);
                 newFrame[0] += lframe[0] / instrument->GetEffectCount();
@@ -498,22 +498,22 @@ void CSynthesizer::XmlLoadNote(IXMLDOMNode* xml, std::wstring& instrument)
 
     if (m_CS)
     {
-        m_notes.back().SEffect(CHORUS);
+        m_notes.back().SendEffect(CHORUS);
     }
 
     if (m_FL)
     {
-        m_notes.back().SEffect(FLANGE);
+        m_notes.back().SendEffect(FLANGE);
     }
 
     if (m_NG) 
     {
-        m_notes.back().SEffect(NOISEGATING);
+        m_notes.back().SendEffect(NOISEGATING);
     }
         
     if (m_LT)
     {
-        m_notes.back().SEffect(LIMITING);
+        m_notes.back().SendEffect(LIMITING);
     }
 
 }

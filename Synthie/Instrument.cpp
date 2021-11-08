@@ -20,14 +20,14 @@ CInstrument::CInstrument()
 //
 //}
 
-bool CInstrument::HEffect(int effect)
+bool CInstrument::HasEffect(int effect)
 {
 
 	return m_effects[effect];
 
 }
 
-void CInstrument::SEffect(int effect)
+void CInstrument::SendEffect(int effect)
 {
 
 	m_effects[effect] = true;

@@ -80,14 +80,14 @@ bool CNote::operator<(const CNote& b)
 
 }
 
-bool CNote::HEffect(int effect)
+bool CNote::HasEffect(int effect)
 {
 
     return m_effects[effect];
 
 }
 
-void CNote::SEffect(int effect)
+void CNote::SendEffect(int effect)
 {
 
     m_effects[effect] = true;
