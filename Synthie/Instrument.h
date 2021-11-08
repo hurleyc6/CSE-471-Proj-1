@@ -18,7 +18,7 @@ public:
 
 	void SEffect(int effect);
 
-	int GetEffect();
+	int GetEffectCount();
 
 private:
 

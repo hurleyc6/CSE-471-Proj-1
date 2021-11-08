@@ -34,7 +34,7 @@ void CInstrument::SEffect(int effect)
 
 }
 
-int CInstrument::GetEffect()
+int CInstrument::GetEffectCount()
 {
 
 	int count = 0;
@@ -46,11 +46,6 @@ int CInstrument::GetEffect()
 
 			count++;
 
-		}
-
-		else
-		{
-			continue;
 		}
 	}
 	return count;

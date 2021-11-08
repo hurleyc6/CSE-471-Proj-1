@@ -164,35 +164,35 @@ bool CSynthesizer::Generate(double* frame)
             if (instrument->HEffect(CHORUS))
             {
                 m_chorus.Play(frame, cframe);
-                newFrame[0] += cframe[0] / instrument->GetEffect();
-                newFrame[1] += cframe[1] / instrument->GetEffect();
+                newFrame[0] += cframe[0] / instrument->GetEffectCount();
+                newFrame[1] += cframe[1] / instrument->GetEffectCount();
             }
 
             double fframe[2];
             if (instrument->HEffect(FLANGE))
             {
                 m_flange.Play(frame, fframe);
-                newFrame[0] += fframe[0] / instrument->GetEffect();
-                newFrame[1] += fframe[1] / instrument->GetEffect();
+                newFrame[0] += fframe[0] / instrument->GetEffectCount();
+                newFrame[1] += fframe[1] / instrument->GetEffectCount();
             }
 
             double nframe[2];
             if (instrument->HEffect(NOISEGATING))
             {
                 m_noisegating.Play(frame, nframe);
-                newFrame[0] += nframe[0] / instrument->GetEffect();
-                newFrame[1] += nframe[1] / instrument->GetEffect();
+                newFrame[0] += nframe[0] / instrument->GetEffectCount();
+                newFrame[1] += nframe[1] / instrument->GetEffectCount();
             }
 
             double lframe[2];
             if (instrument->HEffect(LIMITING))
             {
                 m_limiting.Play(frame, lframe);
-                newFrame[0] += lframe[0] / instrument->GetEffect();
-                newFrame[1] += lframe[1] / instrument->GetEffect();
+                newFrame[0] += lframe[0] / instrument->GetEffectCount();
+                newFrame[1] += lframe[1] / instrument->GetEffectCount();
             }
 
-            if (instrument->GetEffect() > 0)
+            if (instrument->GetEffectCount() > 0)
             {
                 frame[0] = newFrame[0];
                 frame[1] = newFrame[1];
