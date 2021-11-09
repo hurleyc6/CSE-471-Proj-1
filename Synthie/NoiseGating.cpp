@@ -6,8 +6,8 @@ CNoiseGating::CNoiseGating(void)
 
 	m_wet = 0.0;
 	m_dry = 0.0;
-	m_first = 1.0;
-	m_second = 1.0;
+	m_inputL = 1.0;
+	m_inputR = 1.0;
 	m_threshold = 0;
 
 }
@@ -23,11 +23,11 @@ void CNoiseGating::Play(double* in, double* out)
 			if ((in[i] < m_threshold) && (in[i] > -m_threshold))
 			{
 
-				m_first -= .005;
-				if (m_first < 0)
+				m_inputL -= .005;
+				if (m_inputL < 0)
 				{
 
-					m_first = 0;
+					m_inputL = 0;
 
 				}
 					
@@ -36,17 +36,17 @@ void CNoiseGating::Play(double* in, double* out)
 			else
 			{
 
-				m_first += .005;
-				if (m_first > 1)
+				m_inputL += .005;
+				if (m_inputL > 1)
 				{
 
-					m_first = 1;
+					m_inputL = 1;
 
 				}
 					
 			}
 
-			double w = m_wet * in[i] * m_first;
+			double w = m_wet * in[i] * m_inputL;
 			double d = m_dry * in[i];
 			out[i] = d + w;
 
@@ -58,11 +58,11 @@ void CNoiseGating::Play(double* in, double* out)
 			if ((in[i] < m_threshold) && (in[i] > -m_threshold))
 			{
 
-				m_second -= .005;
-				if (m_second < 0)
+				m_inputR -= .005;
+				if (m_inputR < 0)
 				{
 
-					m_second = 0;
+					m_inputR = 0;
 
 				}
 					
@@ -71,17 +71,17 @@ void CNoiseGating::Play(double* in, double* out)
 			else
 			{
 
-				m_second += .005;
-				if (m_second > 1)
+				m_inputR += .005;
+				if (m_inputR > 1)
 				{
 
-					m_second = 1;
+					m_inputR = 1;
 
 				}
 					
 			}
 
-			double w = m_wet * in[i] * m_second;
+			double w = m_wet * in[i] * m_inputR;
 			double d = m_dry * in[i];
 			out[i] = d + w;
 

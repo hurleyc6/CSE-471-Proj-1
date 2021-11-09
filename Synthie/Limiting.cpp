@@ -6,8 +6,8 @@ CLimiting::CLimiting(void)
 
 	m_wet = 0.0;
 	m_dry = 1.0;
-	m_first = 1.0;
-	m_second = 1.0;
+	m_inputL = 1.0;
+	m_inputR = 1.0;
 	m_fract = 1.0;
 	m_threshold = 0;
 

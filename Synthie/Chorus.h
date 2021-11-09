@@ -30,8 +30,8 @@ private:
 	
 	int m_threshold;
 
-	std::vector<double> m_first;
+	std::vector<double> m_inputL;
 
-	std::vector<double> m_second;
+	std::vector<double> m_inputR;
 
 };

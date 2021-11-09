@@ -16,9 +16,9 @@ private:
 
 	double m_dry;
 
-	double m_first;
+	double m_inputL;
 
-	double m_second;
+	double m_inputR;
 
 	double m_fract;
 

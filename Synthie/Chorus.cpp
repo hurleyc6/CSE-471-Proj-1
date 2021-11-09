@@ -13,8 +13,8 @@ CChorus::CChorus(void)
 	m_rate = 0.0;
 	m_threshold = 0;
 	
-	m_first.resize(200000);
-	m_second.resize(200000);
+	m_inputL.resize(200000);
+	m_inputR.resize(200000);
 
 }
 
@@ -53,18 +53,18 @@ void CChorus::Play(double* in, double* out)
 	int tapDelay3 = (1 + lfo3 * m_range) * (1./3. * m_delay) * m_fract + 0.5;
 
 	m_threshold = (1 + m_threshold) % 200000;
-	m_first[m_threshold] = in[0];
-	m_second[m_threshold] = in[1];
+	m_inputL[m_threshold] = in[0];
+	m_inputR[m_threshold] = in[1];
 
 	int rdloc1 = (m_threshold - tapDelay1 + 200000) % 200000;
 	int rdloc2 = (m_threshold - tapDelay2 + 200000) % 200000;
 	int rdloc3 = (m_threshold - tapDelay3 + 200000) % 200000;
 
-	out[0] = 0.6 * (in[0] + m_first[rdloc1] + m_first[rdloc2] + m_first[rdloc3]);
+	out[0] = 0.6 * (in[0] + m_inputL[rdloc1] + m_inputL[rdloc2] + m_inputL[rdloc3]);
 	out[0] *= m_wet;
 	out[0] += m_dry * in[0];
 
-	out[1] = 0.6 * (in[1] + m_second[rdloc1] + m_second[rdloc2] + m_second[rdloc3]);
+	out[1] = 0.6 * (in[1] + m_inputR[rdloc1] + m_inputR[rdloc2] + m_inputR[rdloc3]);
 	out[1] *= m_wet;
 	out[1] += m_dry * in[1];
 
