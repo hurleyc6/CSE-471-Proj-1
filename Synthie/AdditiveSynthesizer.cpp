@@ -81,6 +81,7 @@ bool CAdditiveSynthesizer::Generate()
 
 void CAdditiveSynthesizer::SetNote(CNote* note)
 {
+	m_note = note;
 
 	CComPtr<IXMLDOMNamedNodeMap> attributes;
 	note->Node()->get_attributes(&attributes);

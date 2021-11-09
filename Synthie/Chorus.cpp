@@ -20,26 +20,51 @@ CChorus::CChorus(void)
 
 void CChorus::Play(double* in, double* out)
 {
+	// There are 3 taps into the past
+	// The base delay for the taps are as follows:
+	//   tap 1: m_delay
+	//   tap 2: 2/3 * m_delay
+	//	 tap 3: 1/3 * m_delay
+	//
+	// The delays oscillate based on m_rate. 
+	// m_rate is a low frequency in Hertz.
+	// We will use LFO to describe the sinewave oscillating at the real rate
+	// The real rate for each tap is as follows:
+	//   tap 1: 0.9 * m_rate
+	//   tap 2: m_rate
+	//   tap 3: 1.1 * m_rate
+	// 
+	// m_range describes how far the tap delay can 
+	// vary from the base delay as a proportion of the base delay.
+	// m_range should be between 0 and 1.
+	// 
+	// The tap delay in seconds is then calculated as follows:
+	//   (1 + LFO(t) * m_range) * (base delay)
+	
+	double baseAngle = 2. * PI * m_rate * m_threshold / m_fract;
+	double lfo1 = sin(0.9 * baseAngle);
+	double lfo2 = sin(baseAngle);
+	double lfo3 = sin(1.1 * baseAngle);
 
-	double s = sin(2 * PI * m_rate);
-	double rd = m_range * m_delay;
-	double diff = s * rd;
-	double temp = diff + m_delay;
-	int x = temp * m_fract + 0.5;
+	// Multiplying by sampling frequency converts delay to samples
+	// Adding 0.5 effectively rounds the value
+	int tapDelay1 = (1 + lfo1 * m_range) * m_delay * m_fract + 0.5;
+	int tapDelay2 = (1 + lfo2 * m_range) * (2./3. * m_delay) * m_fract + 0.5;
+	int tapDelay3 = (1 + lfo3 * m_range) * (1./3. * m_delay) * m_fract + 0.5;
 
 	m_threshold = (1 + m_threshold) % 200000;
 	m_first[m_threshold] = in[0];
 	m_second[m_threshold] = in[1];
 
-	int newt = m_threshold + 200000;
-	int size = x * 2;
-	int rdloc = (newt - size) % 200000;
+	int rdloc1 = (m_threshold - tapDelay1 + 200000) % 200000;
+	int rdloc2 = (m_threshold - tapDelay2 + 200000) % 200000;
+	int rdloc3 = (m_threshold - tapDelay3 + 200000) % 200000;
 
-	out[0] = in[0] / 2 + m_first[rdloc] / 2;
+	out[0] = 0.6 * (in[0] + m_first[rdloc1] + m_first[rdloc2] + m_first[rdloc3]);
 	out[0] *= m_wet;
 	out[0] += m_dry * in[0];
 
-	out[1] = in[1] / 2 + m_second[rdloc] / 2;
+	out[1] = 0.6 * (in[1] + m_second[rdloc1] + m_second[rdloc2] + m_second[rdloc3]);
 	out[1] *= m_wet;
 	out[1] += m_dry * in[1];
 

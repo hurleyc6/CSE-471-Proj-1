@@ -74,6 +74,7 @@ bool CToneInstrument::Generate()
 
 void CToneInstrument::SetNote(CNote* note)
 {
+    m_note = note;
 
     // Get a list of all attribute nodes and the
     // length of that list

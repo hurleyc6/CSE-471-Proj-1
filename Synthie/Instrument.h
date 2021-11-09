@@ -16,14 +16,10 @@ public:
 
 	bool HasEffect(int effect);
 
-	void SendEffect(int effect);
-
 	int GetEffectCount();
 
-private:
+protected:
 
-	//CSynthesizer* m_synthesizer = nullptr;
-
-	bool m_effects[4];
+	CNote* m_note;
 
 };

@@ -3,14 +3,7 @@
 
 CInstrument::CInstrument()
 {
-
-	for (int i = 0; i < 4; i++)
-	{
-
-		m_effects[i] = false;
-
-	}
-
+	m_note = nullptr;
 }
 
 //void CInstrument::Synthes(CSynthesizer* syn)
@@ -23,14 +16,7 @@ CInstrument::CInstrument()
 bool CInstrument::HasEffect(int effect)
 {
 
-	return m_effects[effect];
-
-}
-
-void CInstrument::SendEffect(int effect)
-{
-
-	m_effects[effect] = true;
+	return m_note != nullptr && m_note->HasEffect(effect);
 
 }
 
@@ -40,12 +26,9 @@ int CInstrument::GetEffectCount()
 	int count = 0;
 	for (int i = 0; i < 4; i++)
 	{
-
-		if (m_effects[i]) 
+		if (HasEffect(i))
 		{
-
 			count++;
-
 		}
 	}
 	return count;
