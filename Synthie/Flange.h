@@ -36,8 +36,4 @@ private:
 
 	std::vector<double> m_inputR;
 
-	std::vector<double> m_outputL;
-
-	std::vector<double> m_outputR;
-
 };

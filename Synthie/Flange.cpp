@@ -15,41 +15,28 @@ CFlange::CFlange(void)
 
 	m_inputL.resize(200000);
 	m_inputR.resize(200000);
-	m_outputL.resize(200000);
-	m_outputR.resize(200000);
 
 }
 
 void CFlange::Play(double* in, double* out)
 {
-
-	double s = sin(2 * PI * m_rate * m_threshold * m_fract);
-	double rd = m_range * m_delay;
-	double diff = s * rd;
-	double temp = diff + m_delay;
-	int x = temp * m_fract + 0.5;
+	double baseAngle = 2. * PI * m_rate * m_threshold / m_fract;
+	double lfo = sin(baseAngle);
+	int tapDelay = (1 + lfo * m_range) * m_delay * m_fract + 0.5;
 
 	m_threshold = (1 + m_threshold) % 200000;
 	m_inputL[m_threshold] = in[0];
 	m_inputR[m_threshold] = in[1];
 
-	int newt = m_threshold + 200000;
-	int size = x * 2;
-	int rdloc = (newt - size) % 200000;
+	int rdloc = (m_threshold - tapDelay + 200000) % 200000;
 
-	double temp1 = m_outputL[rdloc] * m_num;
-	double temp2 = m_outputR[rdloc] * m_num;
-	out[0] = in[0] / 3 + m_inputL[rdloc] / 3 + temp1 / 3;
-	out[0] *= m_wet;
+	double temp1 = in[0] + m_inputL[rdloc] * m_num;
+	double temp2 = in[1] + m_inputR[rdloc] * m_num;
+	out[0] = m_wet * temp1;
 	out[0] += m_dry * in[0];
 
-	out[1] = in[1] / 3 + m_inputR[rdloc] / 3 + temp2 / 3;
-	out[1] *= m_wet;
+	out[1] = m_wet * temp2;
 	out[1] += m_dry * in[1];
-
-	m_outputL[m_threshold] = out[0];
-	m_outputR[m_threshold] = out[1];
-
 }
 
 void CFlange::XmlLoad(IXMLDOMNode* xml)
