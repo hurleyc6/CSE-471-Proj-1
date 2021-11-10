@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<score bpm="82" beatspermeasure="4">
+	<instrument instrument="ToneInstrument" chorus="1">
+		  <note measure="1" beat="1" dur=".25" note="F4"/>
+		  <note measure="1" beat="1.25" dur=".25" note="G4"/>
+		  <note measure="1" beat="1.5" dur="1" note="A4"/>
+		  <note measure="1" beat="2.5" dur="1" note="C5"/>
+		  <note measure="1" beat="3.5" dur=".75" note="A4"/>
+		  <note measure="1" beat="4.25" dur=".25" note="G4"/>
+		  <note measure="1" beat="4.5" dur=".25" note="A4"/>
+		  <note measure="1" beat="4.75" dur=".25" note="G4"/>
+	</instrument>
+	
+	<instrument instrument="ToneInstrument" flange="1">
+		  <note measure="2" beat="1" dur="2" note="F4"/>
+		  <note measure="2" beat="3.5" dur="1" note="A4"/>
+		  <note measure="2" beat="4.5" dur=".5" note="C5"/>
+	</instrument>
+		  
+	<instrument instrument="ToneInstrument" limiting="1">
+		  <note measure="3" beat="1" dur="2" note="D5"/>
+		  <note measure="3" beat="3" dur=".5" note="F5"/>
+		  <note measure="3" beat="3.5" dur="1" note="E5"/>
+		  <note measure="3" beat="4.5" dur=".5" note="C5"/>
+	</instrument>
+	
+	<instrument instrument="ToneInstrument" noisegating="1">
+		  <note measure="4" beat="1" dur="1.5" note="A4"/>
+		  <note measure="4" beat="2.5" dur=".25" note="Bb4"/>
+		  <note measure="4" beat="2.75" dur=".25" note="A4"/>
+		  <note measure="4" beat="3" dur="1" note="G4"/>
+		  <note measure="4" beat="4.5" dur=".25" note="F4"/>
+		  <note measure="4" beat="4.75" dur=".25" note="G4"/>
+	</instrument>
+	
+	<instrument instrument="ToneInstrument">
+		  <note measure="5" beat="1" dur="1" note="A4"/>
+		  <note measure="5" beat="2" dur="1" note="C5"/>
+		  <note measure="5" beat="3" dur=".25" note="A4"/>
+		  <note measure="5" beat="3.25" dur=".75" note="G4"/>
+		  <note measure="5" beat="4" dur=".75" note="F4"/>
+		  <note measure="5" beat="4.75" dur=".25" note="G4"/>
+		  
+		  <note measure="6" beat="1" dur="2" note="F4"/>
+	</instrument>
+	
+	<instrument instrument="Chorus">
+		<note delay=".01" wet="0.3" dry="0.7" range=".05" rate="9"/>
+	</instrument>
+	<instrument instrument="Flange">
+		<note delay=".02" wet=".5" dry=".5" range=".2" rate=".9" num="1"/>
+	</instrument>
+	<instrument instrument="NoiseGate">
+		<note threshold="50" wet="0" dry="1"/>
+	</instrument>
+	<instrument instrument="Limiter">
+		<note threshold="10" wet="0" dry="1" ratio="2"/>
+	</instrument>
+</score>
