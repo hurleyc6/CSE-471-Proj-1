@@ -79,7 +79,7 @@ Cameron Hurley, component owner
 
 ### Example
 [Score File](additive-synthesizer.score)
-[Audio File](additive-synthesizer.wav)
+[Audio File](additive-sythesizer.wav)
 
 ## Wavetable
 Anthony Rodeman, component owner
