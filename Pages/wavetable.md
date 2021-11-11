@@ -15,6 +15,6 @@ Wavetable using unplugged electric guitar samples I recorded.
 ## Example
 Horn Solo from *You Can't Always Get What You Want* by the Rolling Stones (from a transcription I did for MUS 178 in the Spring)
 
-[Score File](Scores/wavetable-example.score)
+[Score File](/Scores/wavetable-example.score)
 
-[Audio File](Scores/wavetable-example.wav)
+[Audio File](/Scores/wavetable-example.wav)

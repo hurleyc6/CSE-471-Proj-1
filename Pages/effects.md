@@ -45,6 +45,6 @@ An effect which controls the volume of an audio signal.
 
 Each measure using a different effect: chorus, flange, limiter, noise gate, then the rest of the phrase with no effects.
 
-[Score File](Scores/effects-example.score)
+[Score File](/Scores/effects-example.score)
 
-[Audio File](Scores/effects-example.wav)
+[Audio File](/Scores/effects-example.wav)

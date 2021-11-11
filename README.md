@@ -10,15 +10,15 @@ Cameron Hurley (hurleyc6@msu.edu)
 ## Musical Selection: *Title*
 A short description
 
-[Score File](Scores/music-selection.score)
+[Score File](/Scores/music-selection.score)
 
-[Audio File](Scores/music-selection.wav)
+[Audio File](/Scores/music-selection.wav)
 
 
 ## Components
 - [Effects](Pages/effects.md), Cameron Hurley
-- [Additive Synthesizer](Pages/additivesynth.md), Cameron Hurley
-- [Wavetable Synthesizer](Pages/wavetable.md), Anthony Rodeman
+- [Additive Synthesizer](/Pages/additivesynth.md), Cameron Hurley
+- [Wavetable Synthesizer](/Pages/wavetable.md), Anthony Rodeman
 
 
 ## XML Format

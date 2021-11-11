@@ -19,6 +19,6 @@ Cameron Hurley, component owner
 - `vibrato`: a pulsing change of pitch in the sound
 
 ## Example
-[Score File](Scores/additive-synthesizer.score)
+[Score File](/Scores/additive-synthesizer.score)
 
-[Audio File](Scores/additive-sythesizer.wav)
+[Audio File](/Scores/additive-sythesizer.wav)
