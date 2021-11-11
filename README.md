@@ -9,10 +9,8 @@ Cameron Hurley (hurleyc6@msu.edu)
 
 ## Musical Selection: Title
 A short description
-
-[Score File](title.score)
-
-[Audio File](title.wav)
+[Score File](music-selection.score)
+[Audio File](music-selection.wav)
 
 ## Effects
 Cameron Hurley, component owner
