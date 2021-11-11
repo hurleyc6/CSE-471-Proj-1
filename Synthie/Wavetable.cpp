@@ -5,12 +5,26 @@
 #include <sstream>
 #include <vector>
 
-CWavetable::CWavetable()
-{
-}
+// Each sample was recorded on the D string, which is D3
+const double SAMPLE_FREQ = 146.832;
+const int PLUCK = 0;
+const int STRUM = 1;
+const int SUSTAIN = 2;
+const int HARMONIC = 3;
+const int DECAY = 4;
 
-CWavetable::~CWavetable()
+
+CWavetable::CWavetable(std::vector< std::vector<std::array<double, 2>> >* wavesamples)
 {
+	m_freq = SAMPLE_FREQ;
+	m_sampletype = STRUM;
+	m_time = 0;
+	m_dur = 0;
+	m_sampleindex1 = 0;
+	m_sampleindex2 = 0;
+	m_playbackratio = 1;
+	
+	m_wavesamples = wavesamples;
 }
 
 void CWavetable::SetNote(CNote* note)
@@ -38,96 +52,33 @@ void CWavetable::SetNote(CNote* note)
 		{
 
 			value.ChangeType(VT_R8);
-			SetDur(value.dblVal);
+			m_dur = value.dblVal;
 
 		}
 
 		else if (name == "note")
 		{
-
-			double val = NoteToFrequency(value.bstrVal);
-			SetFreq(val);
-
+			m_freq = NoteToFrequency(value.bstrVal);
+			m_playbackratio = m_freq / SAMPLE_FREQ;
 		}
 
-		else if (name == "amp")
+		else if (name == "type")
 		{
+			std::wstring enteredType = value.bstrVal;
 
-			std::wstring s(value.bstrVal);
-			std::string str(s.begin(), s.end());
-			std::stringstream ss(str);
-			std::string temp;
-			double harmonics[8] = { 0 };
-
-			int i = 0;
-			while (std::getline(ss, temp, char(32)))
+			if (enteredType == L"harmonic")
 			{
-				harmonics[i++] = atof(temp.c_str());
+				m_sampletype = Harmonic;
 			}
-
-			SetAmp(harmonics[0]);
-
-		}
-
-		else if (name == "cfi")
-		{
-
-			value.ChangeType(VT_R8);
-			double val = value.dblVal * m_dur;
-			SetCFI(val);
-
-		}
-
-		else if (name == "cfo")
-		{
-
-			value.ChangeType(VT_R8);
-			double val = value.dblVal * m_dur;
-			SetCFO(val);
-
-		}
-
-		else if (name == "ADSR")
-		{
-
-			std::wstring s(value.bstrVal);
-			std::string str(s.begin(), s.end());
-			std::stringstream ss(str);
-			std::string temp;
-
-			std::getline(ss, temp, char(32));
-			auto num = atof(temp.c_str());
-			m_start = num * m_dur;
-
-			std::getline(ss, temp, char(32));
-			num = atof(temp.c_str());
-			m_decay = num * m_dur + m_start;
-
-			std::getline(ss, temp, char(32));
-			num = atof(temp.c_str());
-			m_num = num;
-
-			std::getline(ss, temp, char(32));
-			num = atof(temp.c_str());
-			m_stop = num * m_dur;
-
-		}
-
-		else if (name == "vibrato")
-		{
-
-			std::wstring s(value.bstrVal);
-			std::string str(s.begin(), s.end());
-			std::stringstream ss(str);
-			std::string temp;
-
-			std::getline(ss, temp, char(32));
-			auto num = atof(temp.c_str());
-			m_wave.SetVR(num);
-
-			std::getline(ss, temp, char(32));
-			num = atof(temp.c_str());
-			m_wave.SetVF(num);
+			else if (enteredType == L"pluck")
+			{
+				m_sampletype = Plucked;
+			}
+			else
+			{
+				// Default Strummed
+				m_sampletype = Strummed;
+			}
 
 		}
 	}
@@ -136,9 +87,18 @@ void CWavetable::SetNote(CNote* note)
 
 void CWavetable::Start()
 {
+	m_time = 0;
+	m_sampleindex1 = 0;
+	m_sampleindex2 = 0;
 }
 
 bool CWavetable::Generate()
 {
-	return false;
+	m_frame[0] = m_wavesamples->at(SUSTAIN)[m_sampleindex1].at(0);
+	m_frame[1] = m_wavesamples->at(SUSTAIN)[m_sampleindex1].at(1);
+
+	m_sampleindex1 += m_playbackratio;
+	m_sampleindex1 = fmod( m_sampleindex1, double(m_wavesamples->at(SUSTAIN).size()) );
+	m_time += GetSamplePeriod();
+	return m_time < m_dur;
 }

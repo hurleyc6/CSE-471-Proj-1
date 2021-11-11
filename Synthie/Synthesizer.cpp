@@ -8,6 +8,7 @@
 #include "xmlhelp.h"
 #include <algorithm>
 #include <cmath>
+#include <audio/DirSoundSource.h>
 
 using namespace std;
 
@@ -37,6 +38,7 @@ CSynthesizer::CSynthesizer(void)
     m_CS = false;
     m_FL = false;
 
+    LoadWaveSamples();
 }
 
 void CSynthesizer::Start(void)
@@ -94,7 +96,7 @@ bool CSynthesizer::Generate(double* frame)
         }
         else if (note->Instrument() == L"Wavetable")
         {
-            instrument = new CWavetable();
+            instrument = new CWavetable(&m_wavesamples);
         }
 
         // Configure the instrument object
@@ -471,6 +473,47 @@ void CSynthesizer::XmlLoadInstrument(IXMLDOMNode* xml)
             XmlLoadNote(node, instrument);
 
         }
+    }
+}
+
+void CSynthesizer::LoadWaveSamples()
+{
+    const vector<string> sampleFilenames{
+        "pluck.wav",
+        "strum.wav",
+        "sustain.wav",
+        "harmonic.wav",
+        "decay.wav"
+    };
+
+    for (const string& filename : sampleFilenames)
+    {
+        CDirSoundSource wavein;
+
+        if (!wavein.Open(filename.c_str()))
+        {
+            AfxMessageBox(L"Failed to open WAV source");
+            return;
+        }
+
+        int numSampleFrames = wavein.NumSampleFrames();
+
+        m_wavesamples.push_back(std::vector<std::array<double, 2>>());
+
+        vector<std::array<double, 2>>& wavetable = m_wavesamples.back();
+        wavetable.resize(numSampleFrames);
+
+        for (int i = 0; i < numSampleFrames; i++)
+        {
+            short frame[2];
+            wavein.ReadFrame(frame);
+
+            // Convert to the double format we use
+            wavetable[i][0] = double(frame[0]) / 32767.;
+            wavetable[i][1] = double(frame[1]) / 32767.;
+        }
+
+        wavein.Close();
     }
 }
 

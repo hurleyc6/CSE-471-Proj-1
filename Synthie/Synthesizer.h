@@ -2,6 +2,7 @@
 #include <list>
 #include <string>
 #include <vector>
+#include <array>
 #include "Instrument.h"
 #include "Note.h"
 #include "NoiseGating.h"
@@ -55,6 +56,8 @@ private:
 
     void XmlLoadInstrument(IXMLDOMNode* xml);
 
+    void LoadWaveSamples();
+
     int	m_channels;
 
     double m_sampleRate;
@@ -94,6 +97,8 @@ private:
     CChorus m_chorus;
 
     CFlange m_flange;
+
+    std::vector< std::vector<std::array<double, 2>> > m_wavesamples;
 
 };
 
