@@ -9,7 +9,9 @@ Cameron Hurley (hurleyc6@msu.edu)
 
 ## Musical Selection: Title
 A short description
+
 [Score File](music-selection.score)
+
 [Audio File](music-selection.wav)
 
 ## Effects
@@ -112,9 +114,11 @@ Horn Solo from *You Can't Always Get What You Want* by the Rolling Stones (from 
 
 ## XML Format
 Extension: `.score`
+
 A `score` head node which has attributes:
 	- `bpm`: beats per minute
 	- `beatspermeasure`: how many beats occur in a measure
+
 The score node then has as many `instrument` notes as desired. Each `instrument` node has one attribute:
 	- `instrument`: the name of the instrument to use.
 
@@ -129,4 +133,5 @@ The AdditiveSynth, Wavetable, and ToneInstrument all can generate sound. Each ca
 	- `beat`: which beat in the measure the note is played on (1-indexed floating point up to `beatspermeasure`, exclusive)
 	- `dur`: the length in beats which the note is played for (floating point)
 	- `note`: string which names the note in scientific pitch notation to be played (use 'b' for the flat symbol)
+
 Each instrument may have more possible attributes. These attributes must be given on a per-`note` basis. Information about these attributes is found under the component sections.
