@@ -60,6 +60,7 @@ Each measure using a different effect: chorus, flange, limiter, noise gate, then
 ## Additive Synthesizer
 Cameron Hurley, component owner
 - Sinusoid playback on demand from the sequencer
+- Definition of all harmonics
 - Envelope generation
 - Polyphony
 - Sound cross-fading
