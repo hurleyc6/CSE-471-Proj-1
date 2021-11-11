@@ -12,18 +12,20 @@ const int STRUM = 1;
 const int SUSTAIN = 2;
 const int HARMONIC = 3;
 const int DECAY = 4;
+const double SUSTAINLOOPTRANSITION = .013;
 
 
 CWavetable::CWavetable(std::vector< std::vector<std::array<double, 2>> >* wavesamples)
 {
 	m_freq = SAMPLE_FREQ;
 	m_attacksample = STRUM;
+	m_mainsample = m_attacksample;
 	m_time = 0;
 	m_dur = 0;
 	m_sampleindex1 = 0;
 	m_sampleindex2 = 0;
 	m_playbackratio = 1;
-	m_transitionperiod = .01;
+	m_transitionperiod = .05;
 	m_playingstate = State::Attack;
 	m_susfade = false;
 	
@@ -55,7 +57,7 @@ void CWavetable::SetNote(CNote* note)
 		{
 
 			value.ChangeType(VT_R8);
-			m_dur = value.dblVal;
+			m_dur = value.dblVal * GetBPM();
 
 		}
 
@@ -94,6 +96,7 @@ void CWavetable::Start()
 	m_sampleindex1 = 0;
 	m_sampleindex2 = 0;
 	m_playingstate = State::Attack;
+	m_mainsample = m_attacksample;
 	m_susfade = false;
 }
 
@@ -113,7 +116,7 @@ double CWavetable::InterpolateSample(int sampleNum, double index, int channel)
 	double interpRatio = index - int(index);
 	int nextFrameI = (int(index) + 1) % m_wavesamples->at(sampleNum).size();
 
-	return GetSampleFrame(sampleNum, int(m_sampleindex1)).at(channel) * interpRatio + GetSampleFrame(sampleNum, nextFrameI).at(channel) * (1. - interpRatio);
+	return GetSampleFrame(sampleNum, int(index)).at(channel) * interpRatio + GetSampleFrame(sampleNum, nextFrameI).at(channel) * (1. - interpRatio);
 }
 
 double CWavetable::InterpolateSamples(int sample1Num, double index1, int sample2Num, double index2, double fadeRatio, int channel)
@@ -125,11 +128,12 @@ double CWavetable::InterpolateSamples(int sample1Num, double index1, int sample2
 
 bool CWavetable::Generate()
 {
-	// Quick check to make sure we fade out
-	if (m_dur - m_time < m_transitionperiod)
-	{
-		m_playingstate = State::Decay;
-	}
+	//// Quick check to make sure we fade out
+	//if (m_dur - m_time < m_transitionperiod)
+	//{
+	//	m_playingstate = State::Decay;
+	//	m_sampleindex1 = 0
+	//}
 
 	// Based on playing state, make a 
 	switch (m_playingstate)
@@ -139,7 +143,7 @@ bool CWavetable::Generate()
 			m_frame[0] = InterpolateSample(m_attacksample, m_sampleindex1, 0);
 			m_frame[1] = InterpolateSample(m_attacksample, m_sampleindex1, 1);
 
-			if (SampleTime(m_attacksample) - m_time < m_transitionperiod)
+			if (m_time > SampleTime(m_attacksample) - m_transitionperiod)
 			{
 				m_playingstate = IntoSustain;
 				m_sampleindex2 = 0;
@@ -148,13 +152,14 @@ bool CWavetable::Generate()
 		break;
 	case CWavetable::IntoSustain:
 		{
-			double interpRatio = 1. - (SampleTime(m_attacksample) - m_time) / m_transitionperiod;
+			double interpRatio = (SampleTime(m_attacksample) - m_time) / m_transitionperiod;
 			m_frame[0] = InterpolateSamples(m_attacksample, m_sampleindex1, SUSTAIN, m_sampleindex2, interpRatio, 0);
 			m_frame[1] = InterpolateSamples(m_attacksample, m_sampleindex1, SUSTAIN, m_sampleindex2, interpRatio, 1);
 
-			if (SampleTime(m_attacksample) - m_time <= GetSamplePeriod())
+			if (m_time >= SampleTime(m_attacksample) - GetSamplePeriod())
 			{
 				m_playingstate = State::Sustain;
+				m_mainsample = SUSTAIN;
 				m_sampleindex1 = m_sampleindex2;
 				m_sampleindex2 = 0;
 			}
@@ -165,7 +170,7 @@ bool CWavetable::Generate()
 	case CWavetable::Sustain:
 		{
 			// Fade between loops if close to end
-			if (GetSample(SUSTAIN).size() - m_sampleindex1 < GetSampleRate() * m_transitionperiod)
+			if (m_sampleindex1 / double(GetSample(SUSTAIN).size()) > 1. - SUSTAINLOOPTRANSITION / SampleTime(SUSTAIN))
 			{
 				if (!m_susfade)
 				{
@@ -183,7 +188,8 @@ bool CWavetable::Generate()
 
 			if (m_susfade)
 			{
-				double interpRatio = 1. - (GetSample(SUSTAIN).size() - m_sampleindex1) / (GetSampleRate() * m_transitionperiod);
+				double interpRatio = (1. - m_sampleindex1 / double(GetSample(SUSTAIN).size())) / (SUSTAINLOOPTRANSITION / SampleTime(SUSTAIN));
+				interpRatio *= interpRatio;
 				m_frame[0] = InterpolateSamples(SUSTAIN, m_sampleindex1, SUSTAIN, m_sampleindex2, interpRatio, 0);
 				m_frame[1] = InterpolateSamples(SUSTAIN, m_sampleindex1, SUSTAIN, m_sampleindex2, interpRatio, 1);
 			}
@@ -193,7 +199,9 @@ bool CWavetable::Generate()
 				m_frame[1] = InterpolateSample(SUSTAIN, m_sampleindex1, 1);
 			}
 
-			if (m_dur - m_time < SampleTime(DECAY))
+			m_sampleindex2 = NextIndex(SUSTAIN, m_sampleindex2);
+
+			if (m_time > m_dur - SampleTime(DECAY))
 			{
 				m_playingstate = State::IntoDecay;
 				m_sampleindex2 = 0;
@@ -202,23 +210,25 @@ bool CWavetable::Generate()
 		break;
 	case CWavetable::IntoDecay:
 		{
-			double interpRatio = 1. - (m_dur - m_time) / SampleTime(DECAY);
+			double interpRatio = 1. - (m_time - m_dur + SampleTime(DECAY)) / m_transitionperiod;
 			m_frame[0] = InterpolateSamples(SUSTAIN, m_sampleindex1, DECAY, m_sampleindex2, interpRatio, 0);
 			m_frame[1] = InterpolateSamples(SUSTAIN, m_sampleindex1, DECAY, m_sampleindex2, interpRatio, 1);
 
-			if (m_dur - m_time - SampleTime(DECAY) <= GetSamplePeriod())
+			m_sampleindex2 = NextIndex(DECAY, m_sampleindex2);
+
+			if (m_time > m_dur - SampleTime(DECAY) + m_transitionperiod)
 			{
 				m_playingstate = State::Decay;
+				m_mainsample = DECAY;
 				m_sampleindex1 = m_sampleindex2;
 				m_sampleindex2 = 0;
 			}
-
-			m_sampleindex2 = NextIndex(SUSTAIN, m_sampleindex2);
 		}
 		break;
 	case CWavetable::Decay:
 		{
-			double amplitude = 1. - (m_dur - m_time) / m_transitionperiod;
+			double amplitude = (m_dur - m_time) / m_transitionperiod;
+			amplitude = amplitude > 1. ? 1 : amplitude;
 			m_frame[0] = amplitude * InterpolateSample(DECAY, m_sampleindex1, 0);
 			m_frame[1] = amplitude * InterpolateSample(DECAY, m_sampleindex1, 1);
 		}
@@ -227,7 +237,7 @@ bool CWavetable::Generate()
 		break;
 	}
 
-	m_sampleindex1 = NextIndex(SUSTAIN, m_sampleindex1);
+	m_sampleindex1 = NextIndex(m_mainsample, m_sampleindex1);
 	m_time += GetSamplePeriod();
 	return m_time < m_dur;
 }

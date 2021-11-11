@@ -25,6 +25,7 @@ private:
 
     double m_dur;
     double m_transitionperiod;
+    int m_mainsample;
     int m_attacksample;
     State m_playingstate;
     bool m_susfade;
