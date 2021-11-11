@@ -77,6 +77,10 @@ Cameron Hurley, component owner
 	- `ADSR`: refers to the level and time of each pitch
 	- `vibrato`: a pulsing change of pitch in the sound
 
+### Example
+[Score File](additive-synthesizer.score)
+[Audio File](additive-synthesizer.wav)
+
 ## Wavetable
 Anthony Rodeman, component owner
 Wavetable using unplugged electric guitar samples I recorded.
