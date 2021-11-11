@@ -44,7 +44,7 @@ Cameron Hurley, component owner
 
 ## Wavetable
 Anthony Rodeman, component owner
-Wavetable using F Horn samples from [Liz Harwood](https://www.youtube.com/watch?v=uUYnIJH5TD0).
+Wavetable using unplugged electric guitar samples I recorded.
 
 ### Example
 Horn Solo from *You Can't Always Get What You Want* by the Rolling Stones (from a transcription I did for MUS 178 in the Spring)
