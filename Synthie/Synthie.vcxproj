@@ -155,6 +155,7 @@
     <ClCompile Include="audio\WaveformBuffer.cpp" />
     <ClCompile Include="audio\WaveformWnd.cpp" />
     <ClCompile Include="ToneInstrument.cpp" />
+    <ClCompile Include="Wavetable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AdditiveSynthesizer.h" />
@@ -185,6 +186,7 @@
     <ClInclude Include="audio\WaveformBuffer.h" />
     <ClInclude Include="audio\WaveformWnd.h" />
     <ClInclude Include="ToneInstrument.h" />
+    <ClInclude Include="Wavetable.h" />
     <ClInclude Include="xmlhelp.h" />
   </ItemGroup>
   <ItemGroup>

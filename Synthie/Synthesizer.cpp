@@ -4,6 +4,7 @@
 #include "ToneInstrument.h"
 #include "AdditiveSynthesizer.h"
 #include "AdditiveWaves.h"
+#include "Wavetable.h"
 #include "xmlhelp.h"
 #include <algorithm>
 #include <cmath>
@@ -85,12 +86,15 @@ bool CSynthesizer::Generate(double* frame)
             instrument = new CToneInstrument();
 
         }
-
         else if (note->Instrument() == L"AdditiveSynth")
         {
 
             instrument = new CAdditiveSynthesizer();
 
+        }
+        else if (note->Instrument() == L"Wavetable")
+        {
+            instrument = new CWavetable();
         }
 
         // Configure the instrument object
