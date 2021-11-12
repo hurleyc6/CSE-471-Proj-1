@@ -509,8 +509,8 @@ void CSynthesizer::LoadWaveSamples()
             wavein.ReadFrame(frame);
 
             // Convert to the double format we use
-            wavetable[i][0] = double(frame[0]) / 32767.;
-            wavetable[i][1] = double(frame[1]) / 32767.;
+            wavetable[i][0] = double(frame[0]) / 32767. * 2;
+            wavetable[i][1] = double(frame[1]) / 32767. * 2;
         }
 
         wavein.Close();
