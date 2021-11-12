@@ -7,8 +7,8 @@ Anthony Rodeman (rodeman2@msu.edu)
 
 Cameron Hurley (hurleyc6@msu.edu)
 
-## Musical Selection: *Title*
-A short description
+## Musical Selection: *Whisked to the Shire after Gameday*
+Another victory for the Spartans wraps up, and you decide to relax by the Red Cedar. You have a nice talk with an old friend, and suddenly you find yourself in Middle Earth!
 
 [Score File](/Scores/music-selection.score)
 
